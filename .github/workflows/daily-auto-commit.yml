@@ -1,0 +1,30 @@
+name: Daily Auto Commit
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update streak log
+        run: |
+          mkdir -p .github/streak
+          echo "Última atualização automática: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" > .github/streak/last-update.md
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/streak/last-update.md
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: atualização diária automática ($(date -u +'%Y-%m-%d'))"
+            git push
+          fi
