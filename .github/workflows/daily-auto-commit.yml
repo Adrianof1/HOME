@@ -14,16 +14,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Update streak log
+      - name: Update README timestamp
         run: |
-          mkdir -p .github/streak
-          echo "Última atualização automática: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" > .github/streak/last-update.md
+          STAMP="_Última atualização: $(date -u +'%Y-%m-%d %H:%M:%S UTC')_"
+          awk -v stamp="$STAMP" '
+            /<!-- LAST-UPDATE:START -->/ { print; print "### 🔄 Última atualização automática"; print stamp; skip=1; next }
+            /<!-- LAST-UPDATE:END -->/ { skip=0 }
+            !skip { print }
+          ' README.md > README.md.tmp && mv README.md.tmp README.md
 
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .github/streak/last-update.md
+          git add README.md
           if ! git diff --cached --quiet; then
             git commit -m "chore: atualização diária automática ($(date -u +'%Y-%m-%d'))"
             git push
