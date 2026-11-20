@@ -22,5 +22,5 @@
 
 <!-- LAST-UPDATE:START -->
 ### 🔄 Última atualização automática
-_Última atualização: 2026-11-19 11:23:07 UTC_
+_Última atualização: 2026-11-20 11:13:02 UTC_
 <!-- LAST-UPDATE:END -->
